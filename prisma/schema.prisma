@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id                Int      @id @default(autoincrement())
+  nombre            String
+  telefono          String
+  paginaWeb         String
+  direccion         String
+  ciudad            String
+  departamento      String
+  pais              String
+  logoUrl           String
+  tipoIdentificacion String
+  numeroIdentificacion String
+  users             User[]   @relation("CompanyUser")
+}
+
+model User {
+  id                Int      @id @default(autoincrement())
+  nombre            String
+  correo            String   @unique
+  contrasena        String
+  rol               Rol
+  estado            EstadoUser
+  companyId         Int
+  company           Company  @relation("CompanyUser", fields: [companyId], references: [id])
+}
+
+enum Rol {
+  ADMINISTRADOR
+  CAJERO
+}
+
+enum EstadoUser {
+  ACTIVO
+  DESACTIVADO
+}
+
+model Product {
+  id                Int      @id @default(autoincrement())
+  nombre            String
+  urlImagen         String
+  costo             Float
+  precio            Float
+  categoriaId       Int
+  categoria         Category @relation(fields: [categoriaId], references: [id])
+  cantidad          Int
+  estado            EstadoProducto
+
+  Kitchen Kitchen[] 
+
+  Invoice Invoice[]
+}
+
+enum EstadoProducto {
+  ACTIVO
+  DESACTIVADO
+}
+
+model Category {
+  id                Int      @id @default(autoincrement())
+  nombre            String
+  estado            EstadoProducto
+  productos         Product[]
+}
+
+model Client {
+  id                Int      @id @default(autoincrement())
+  nombre            String
+  telefono          String
+  direccion         String
+  kitchens          Kitchen[]
+  invoices          Invoice[]
+}
+
+model Kitchen {
+  id                Int      @id @default(autoincrement())
+  clientId          Int
+  client            Client   @relation(fields: [clientId], references: [id])
+  products          Product[]
+  observaciones     String?  // Campo opcional para observaciones
+}
+
+model Invoice {
+  id                Int      @id @default(autoincrement())
+  consecutivo       Int      @default(autoincrement())
+  clientId          Int?     // Campo opcional: el cliente es opcional
+  client            Client?  @relation(fields: [clientId], references: [id])
+  products          Product[]
+  descuento         Float?   // Campo opcional para descuento
+  total             Float
+  fecha             DateTime @default(now())
+  estado            EstadoFactura
+  observaciones     String?  // Campo opcional para observaciones
+  turnoId           Int?     // Campo opcional para asociar un turno
+  turno             Turno?   @relation(fields: [turnoId], references: [id]) // Relación con el turno
+}
+
+enum EstadoFactura {
+  FACTURADO
+  ANULADO
+}
+
+model Turno {
+  id                Int      @id @default(autoincrement())
+  codigo            String   @unique  // Código del turno
+  horaInicio        DateTime @default(now()) // Hora en la que se genera el turno
+  horaFin           DateTime? // Hora en que se cierra el turno
+  estado            EstadoTurno
+  invoices          Invoice[] // Facturas asociadas a este turno
+}
+
+enum EstadoTurno {
+  PENDIENTE
+  CERRADO
+}
+

@@ -9,18 +9,29 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^5.21.1",
+    "@vercel/postgres": "^0.10.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mkcert": "^3.2.0",
+    "next": "14.2.15",
+    "nookies": "^2.5.2",
+    "prisma": "^5.21.1",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.15"
+    "vercel": "^37.11.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.15",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.15"
+    "typescript": "^5"
   }
 }
