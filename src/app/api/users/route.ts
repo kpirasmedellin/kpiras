@@ -48,7 +48,7 @@ async function verifyTokenAndRole(authHeader: string | null, requiredRole?: 'ADM
     }
 
     return decoded;
-  } catch (error) {
+  } catch {
     throw new Error('Token inválido o expirado');
   }
 }

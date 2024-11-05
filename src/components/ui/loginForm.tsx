@@ -23,15 +23,12 @@ const LoginForm = () => {
       });
   
       if (res.ok) {
-        const data = await res.json();
-        console.log('Cookie set:', document.cookie); // Verifica las cookies
-  
         router.push("/dashboard");
       } else {
         const errorData = await res.json();
         setError(errorData.error || "Error de autenticación");
       }
-    } catch (err) {
+    } catch {
       setError("Error de red");
     }
   };
