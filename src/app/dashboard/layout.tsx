@@ -1,20 +1,22 @@
-import Sidebar from "@/components/ui/dashboard/sideBar";
-import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route"; // Ajusta la ruta si es necesario
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Dashboard page",
-};
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
+
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 p-8 bg-gray-100">{children}</main>
+    <div>
+      <h1>Panel de Control</h1>
+      <main>{children}</main>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,29 +13,20 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-  
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // Agregar esta línea
-        body: JSON.stringify({ correo, contrasena }),
-      });
-  
-      if (res.ok) {
-        router.push("/dashboard");
-      } else {
-        const errorData = await res.json();
-        setError(errorData.error || "Error de autenticación");
-      }
-    } catch {
-      setError("Error de red");
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      correo,
+      contrasena,
+    });
+
+    if (res?.error) {
+      setError(res.error);
+    } else {
+      router.push("/dashboard");
     }
   };
-  
-  
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <form
@@ -44,11 +36,13 @@ const LoginForm = () => {
         <h2 className="mb-6 text-2xl font-semibold text-center text-gray-700">
           Iniciar Sesión
         </h2>
-        
+
         {error && <p className="mb-4 text-center text-red-500">{error}</p>}
-        
+
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-600">Correo</label>
+          <label className="block mb-2 text-sm font-medium text-gray-600">
+            Correo
+          </label>
           <input
             type="email"
             value={correo}
@@ -57,9 +51,11 @@ const LoginForm = () => {
             required
           />
         </div>
-        
+
         <div className="mb-6">
-          <label className="block mb-2 text-sm font-medium text-gray-600">Contraseña</label>
+          <label className="block mb-2 text-sm font-medium text-gray-600">
+            Contraseña
+          </label>
           <input
             type="password"
             value={contrasena}
@@ -68,7 +64,7 @@ const LoginForm = () => {
             required
           />
         </div>
-        
+
         <button
           type="submit"
           className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
