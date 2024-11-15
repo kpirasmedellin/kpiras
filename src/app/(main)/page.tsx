@@ -1,5 +1,12 @@
-export default function Home() {
+import RestaurantLocation from "@/components/location";
+import RestaurantHeroCarousel from "@/components/ui/heroCarousel";
+
+
+export default function SomePage() {
   return (
-    <h1>Home</h1>
-  );
+    <div className="w-full">
+      <RestaurantHeroCarousel />
+      <RestaurantLocation />
+    </div>
+  )
 }

@@ -19,6 +19,7 @@ const LoginForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Agregar esta línea
         body: JSON.stringify({ correo, contrasena }),
       });
   
@@ -32,6 +33,7 @@ const LoginForm = () => {
       setError("Error de red");
     }
   };
+  
   
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">

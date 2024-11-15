@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { cookies } from "next/headers";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
@@ -83,16 +84,17 @@ export async function POST(req: NextRequest) {
         company: user.company,
       },
     });
-
-    // Establecer el token como una cookie
-    response.cookies.set("token", token, {
-      httpOnly: true,     // Solo accesible en el servidor
-      secure: process.env.NODE_ENV === "production", // Solo HTTPS en producción
-      maxAge: 8 * 60 * 60, // 8 horas en segundos
-      path: "/",           // Disponible en todas las rutas
+    
+    cookies().set("token", token, {
+      httpOnly: true,
+      secure: false,
+      maxAge: 8 * 60 * 60,
+      path: "/",
+      sameSite: "lax",
     });
-
+    
     return response;
+    
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
