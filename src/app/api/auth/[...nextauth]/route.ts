@@ -1,8 +1,9 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { JWT } from "next-auth/jwt";
+import { AdapterUser } from "next-auth/adapters";
 
 const prisma = new PrismaClient();
 
@@ -34,10 +35,10 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: user.id, // ID como número
+          id: user.id, 
           nombre: user.nombre,
           correo: user.correo,
-          rol: user.rol, // Rol personalizado
+          rol: user.rol,
         };
       },
     }),
@@ -45,20 +46,20 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET, // Asegúrate de que esto esté presente
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }: { token: JWT; user?: User | AdapterUser; account?: any }) {
       if (user) {
-        token.userId = user.id; // Asigna ID del usuario
-        token.rol = user.rol;   // Asigna rol del usuario
+        token.userId = user.id; // Asigna ID
+        token.rol = (user as User).rol || ''; // Asigna rol si está disponible
       }
-      return token as JWT; // Forzar el tipo de token a JWT personalizado
+      return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: JWT }) {
       session.user = {
-        ...session.user,  // Propaga propiedades predeterminadas
-        id: token.userId as number, // Asegura tipo correcto para id
-        rol: token.rol as string,   // Asegura tipo correcto para rol
+        ...session.user,
+        id: token.userId,
+        rol: token.rol,
       };
       return session;
     },
