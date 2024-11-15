@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions, User } from "next-auth";
+import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -48,18 +48,18 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user, account }: { token: JWT; user?: User | AdapterUser; account?: any }) {
+    async jwt({ token, user }: { token: JWT; user?: User | AdapterUser; account?: any }) {
       if (user) {
         token.userId = user.id; // Asigna ID
         token.rol = (user as User).rol || ''; // Asigna rol si está disponible
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: JWT }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       session.user = {
         ...session.user,
-        id: token.userId,
-        rol: token.rol,
+        id: token.userId as number, // Castea explícitamente a número
+        rol: token.rol as string,   // Castea explícitamente a string
       };
       return session;
     },
