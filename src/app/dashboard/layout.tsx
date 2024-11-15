@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route"; // Ajusta la ruta si es necesario
+import { authOptions } from "@/app/lib/auth"; // Ajusta la ruta si es necesario
 import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({

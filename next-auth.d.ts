@@ -2,8 +2,8 @@ import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
   interface User extends DefaultUser {
-    id: number; // Personalización del ID
-    rol: string; // Rol del usuario
+    id: number;
+    rol: string;
   }
 
   interface Session {
@@ -12,9 +12,11 @@ declare module "next-auth" {
       rol: string;
     } & DefaultSession["user"];
   }
+}
 
+declare module "next-auth/jwt" {
   interface JWT {
-    userId: number; // Añade ID del usuario al token JWT
-    rol: string;    // Añade rol del usuario al token JWT
+    userId: number;
+    rol: string;
   }
 }
