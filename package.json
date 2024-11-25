@@ -11,8 +11,12 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@radix-ui/react-avatar": "^1.1.1",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.4",
     "@vercel/postgres": "^0.10.0",
     "bcryptjs": "^2.4.3",
+    "class-variance-authority": "^0.7.0",
     "cls": "^0.1.5",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.17",
@@ -33,6 +37,7 @@
     "react-to-print": "^3.0.2",
     "styled-components": "^6.1.13",
     "sweetalert2-react-content": "^5.0.7",
+    "tailwind-merge": "^2.5.5",
     "vercel": "^37.11.0",
     "zod": "^3.23.8",
     "zustand": "^5.0.1"
