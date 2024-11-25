@@ -44,63 +44,77 @@ enum EstadoUser {
 }
 
 model Product {
-  id                Int      @id @default(autoincrement())
-  nombre            String
-  urlImagen         String
-  costo             Float
-  precio            Float
-  categoriaId       Int
-  categoria         Category @relation(fields: [categoriaId], references: [id])
-  cantidad          Int
-  estado            EstadoProducto
-
-  Kitchen Kitchen[] 
-
-  Invoice Invoice[]
-}
-
-enum EstadoProducto {
-  ACTIVO
-  DESACTIVADO
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  urlImagen   String
+  costo       Float
+  precio      Float
+  categoriaId Int
+  estado      String   @default("ACTIVO")
+  cantidad    Int      @default(0) // Cantidad inicial en inventario
+  categoria   Category @relation(fields: [categoriaId], references: [id])
+  KitchenProducts KitchenProducts[]
+  InvoiceProducts InvoiceProducts[]
 }
 
 model Category {
-  id                Int      @id @default(autoincrement())
-  nombre            String
-  estado            EstadoProducto
-  productos         Product[]
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  estado      String   @default("ACTIVO")
+  productos   Product[]
 }
 
 model Client {
-  id                Int      @id @default(autoincrement())
-  nombre            String
-  telefono          String
-  direccion         String
-  kitchens          Kitchen[]
-  invoices          Invoice[]
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  telefono    String
+  direccion   String
+  kitchens    Kitchen[]
+  invoices    Invoice[]
 }
 
 model Kitchen {
-  id                Int      @id @default(autoincrement())
-  clientId          Int
-  client            Client   @relation(fields: [clientId], references: [id])
-  products          Product[]
-  observaciones     String?  // Campo opcional para observaciones
+  id               Int              @id @default(autoincrement())
+  clientId         Int?             // Relación opcional con cliente
+  client           Client?          @relation(fields: [clientId], references: [id])
+  observaciones    String?          // Campo opcional
+  KitchenProducts  KitchenProducts[] // Relación con productos
 }
 
 model Invoice {
-  id                Int      @id @default(autoincrement())
-  consecutivo       Int      @default(autoincrement())
-  clientId          Int?     // Campo opcional: el cliente es opcional
-  client            Client?  @relation(fields: [clientId], references: [id])
-  products          Product[]
-  descuento         Float?   // Campo opcional para descuento
-  total             Float
-  fecha             DateTime @default(now())
-  estado            EstadoFactura
-  observaciones     String?  // Campo opcional para observaciones
-  turnoId           Int?     // Campo opcional para asociar un turno
-  turno             Turno?   @relation(fields: [turnoId], references: [id]) // Relación con el turno
+  id               Int              @id @default(autoincrement())
+  clientId         Int?             // Relación opcional con cliente
+  client           Client?          @relation(fields: [clientId], references: [id])
+  descuento        Float?           // Descuento opcional
+  total            Float            // Total de la factura
+  fecha            DateTime         @default(now())
+  estado           EstadoFactura    // Estado de la factura
+  observaciones    String?          // Campo opcional
+  turnoId          Int?             // Relación opcional con turno
+  turno            Turno?           @relation(fields: [turnoId], references: [id])
+  InvoiceProducts  InvoiceProducts[] // Relación con productos
+}
+
+model KitchenProducts {
+  id               Int       @id @default(autoincrement())
+  kitchenId        Int
+  productId        Int
+  cantidad         Int       @default(1) // Cantidad solicitada
+  costo            Float     // Costo unitario
+  precio           Float     // Precio unitario
+  kitchen          Kitchen   @relation(fields: [kitchenId], references: [id])
+  product          Product   @relation(fields: [productId], references: [id])
+}
+
+model InvoiceProducts {
+  id               Int       @id @default(autoincrement())
+  invoiceId        Int
+  productId        Int
+  cantidad         Int       @default(1) // Cantidad vendida
+  costo            Float     // Costo unitario
+  precio           Float     // Precio unitario
+  invoice          Invoice   @relation(fields: [invoiceId], references: [id])
+  product          Product   @relation(fields: [productId], references: [id])
 }
 
 enum EstadoFactura {
@@ -109,16 +123,15 @@ enum EstadoFactura {
 }
 
 model Turno {
-  id                Int      @id @default(autoincrement())
-  codigo            String   @unique  // Código del turno
-  horaInicio        DateTime @default(now()) // Hora en la que se genera el turno
-  horaFin           DateTime? // Hora en que se cierra el turno
-  estado            EstadoTurno
-  invoices          Invoice[] // Facturas asociadas a este turno
+  id          Int      @id @default(autoincrement())
+  codigo      String   @unique
+  horaInicio  DateTime @default(now())
+  horaFin     DateTime?
+  estado      EstadoTurno
+  invoices    Invoice[]
 }
 
 enum EstadoTurno {
   PENDIENTE
   CERRADO
 }
-

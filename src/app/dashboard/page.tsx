@@ -12,7 +12,8 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1>Bienvenido, {session.user?.rol}</h1>
+      <h1>Bienvenido, {session.user.nombre}</h1>
+      <h3>Rol: {session.user.rol}</h3>
       <p>Tu ID de usuario es: {session.user?.id}</p>
       <button onClick={()=>signOut({ callbackUrl: "/" })}>Logout</button>
     </div>

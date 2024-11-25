@@ -1,7 +1,16 @@
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from '@/app/lib/prisma';
+import { JWT } from "next-auth/jwt";
+
+// Define una interfaz explícita para el usuario
+interface AuthUser {
+  id: string; // Cambiado de number a string
+  nombre: string;
+  correo: string;
+  rol: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -11,7 +20,9 @@ export const authOptions: NextAuthOptions = {
         correo: { label: "Correo", type: "email" },
         contrasena: { label: "Contraseña", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(
+        credentials: Record<"correo" | "contrasena", string> | undefined
+      ): Promise<AuthUser | null> {
         if (!credentials) return null;
 
         const { correo, contrasena } = credentials;
@@ -31,7 +42,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: user.id, 
+          id: user.id.toString(), // Convertir el ID a string
           nombre: user.nombre,
           correo: user.correo,
           rol: user.rol,
@@ -49,21 +60,26 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: AuthUser }): Promise<JWT> {
       if (user) {
         return {
           ...token,
-          userId: Number(user.id),
+          nombre: user.nombre,
+          email: user.correo,
+          userId: user.id,
           rol: user.rol,
         };
       }
       return token;
     },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = Number(token.userId);
-        session.user.rol = token.rol;
-      }
+    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
+      session.user = {
+        ...session.user,
+        id: token.userId as string,
+        nombre: token.nombre as string,
+        email: token.email as string,
+        rol: token.rol as string,
+      };
       return session;
     },
   },
