@@ -1,71 +1,103 @@
 'use client'
-import React, { useEffect, useState } from 'react';
-import { fetchProducts } from '@/services/apiServices';
-import useStore from '@/stores/useStore';
-import { Product } from '@/types/Imenu'; // Importa el tipo Product
+
+import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { fetchProducts } from '@/services/apiServices'
+import useStore from '@/stores/useStore'
+import { Product } from '@/types/Imenu'
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { ProductSkeleton } from "@/components/ui/product-skeleton"
 
 export default function ProductList() {
-  // Estado para almacenar los productos y filtros
-  const [productos, setProductos] = useState<Product[]>([]); // Estado tipado explícitamente
-  const [search, setSearch] = useState<string>(''); // Busca productos por nombre
-  const [categoriaId, setCategoriaId] = useState<number | null>(null); // Filtra por categoría
+  const [productos, setProductos] = useState<Product[]>([])
+  const [search, setSearch] = useState<string>('')
+  const [categoriaId, setCategoriaId] = useState<string>("all")
+  const [isLoading, setIsLoading] = useState(true)
 
-  const { addToCarrito } = useStore(); // Usa Zustand para manejar el carrito
+  const { addToCarrito } = useStore()
 
   useEffect(() => {
-    // Función para cargar productos
     const loadProducts = async () => {
+      setIsLoading(true)
       try {
-        const data = await fetchProducts(categoriaId || undefined); // Carga productos según la categoría
-        setProductos(data); // Actualiza el estado
+        const data = await fetchProducts(categoriaId !== "all" ? Number(categoriaId) : undefined)
+        setProductos(data)
       } catch (error) {
-        console.error('Error al cargar productos:', error);
+        console.error('Error al cargar productos:', error)
+      } finally {
+        setIsLoading(false)
       }
-    };
-    loadProducts();
-  }, [categoriaId]); // Vuelve a cargar productos cuando cambia la categoría
+    }
+    loadProducts()
+  }, [categoriaId])
 
-  // Filtra productos según la búsqueda
-  const filteredProducts = productos.filter((p: Product) =>
+  const enabledProducts = productos.filter((p) => p.estado === "ACTIVO")
+
+  const filteredProducts = enabledProducts.filter((p: Product) =>
     p.nombre.toLowerCase().includes(search.toLowerCase())
-  );
+  )
 
   return (
-    <div>
-      {/* Barra de búsqueda */}
-      <input
-        type="text"
-        placeholder="Buscar producto"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="border p-2 w-full"
-      />
-      
-      {/* Selector de categorías */}
-      <select
-        onChange={(e) => setCategoriaId(Number(e.target.value) || null)}
-        className="border p-2 w-full mt-2"
-      >
-        <option value="">Todas las Categorías</option>
-        <option value="1">Categoría 1</option>
-        <option value="2">Categoría 2</option>
-      </select>
+    <div className="p-4 bg-amber-50">
+      <div className="mb-4 space-y-4">
+        <Input
+          type="text"
+          placeholder="Buscar producto"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full"
+        />
+        
+        <Select onValueChange={(value) => setCategoriaId(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Todas las Categorías" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas las Categorías</SelectItem>
+            <SelectItem value="1">Categoría 1</SelectItem>
+            <SelectItem value="2">Categoría 2</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-      {/* Lista de productos */}
-      <div className="grid grid-cols-3 gap-4 mt-4">
-        {filteredProducts.map((producto: Product) => (
-          <div key={producto.id} className="border p-4">
-            <h3>{producto.nombre}</h3>
-            <p>${producto.precio}</p>
-            <button
-              onClick={() => addToCarrito(producto)} // Agrega el producto al carrito
-              className="bg-green-500 text-white px-4 py-2 mt-2"
-            >
-              Agregar al Carrito
-            </button>
-          </div>
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {isLoading
+          ? Array.from({ length: 6 }).map((_, index) => (
+              <ProductSkeleton key={index} />
+            ))
+          : filteredProducts.map((producto: Product) => (
+              <Card key={producto.id} className="overflow-hidden">
+                <CardHeader className="p-0">
+                  <div className="relative h-48 w-full">
+                    <Image
+                      src={producto.urlImagen || '/placeholder.png'}
+                      alt={producto.nombre}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <CardTitle>{producto.nombre}</CardTitle>
+                  <p className="text-amber-700 font-bold mt-2">${producto.precio.toFixed(2)}</p>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    onClick={() => addToCarrito(producto)}
+                    className="w-full bg-amber-500 text-amber-950 hover:bg-amber-600"
+                  >
+                    Agregar al Carrito
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))
+        }
       </div>
     </div>
-  );
+  )
 }
+
+  

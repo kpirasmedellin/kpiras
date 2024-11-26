@@ -38,7 +38,7 @@ const Invoice = React.forwardRef(({ cliente, carrito, observaciones, total }: an
     <p className="text-center mt-6 text-xs">Gracias por su compra</p>
   </div>
 ));
-Invoice.displayName = "Invoice";
+
 export default function Cart() {
   const {
     carrito,
