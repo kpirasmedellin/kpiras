@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import * as React from "react"
 import { cn } from "@/app/lib/utils"
@@ -23,6 +23,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = React.useState(true)
   const [isMobile, setIsMobile] = React.useState(false)
 
+  // Este hook solo debe ejecutarse en el cliente
   React.useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
@@ -133,4 +134,3 @@ export function SidebarTrigger({ className, ...props }: React.ButtonHTMLAttribut
     </button>
   )
 }
-

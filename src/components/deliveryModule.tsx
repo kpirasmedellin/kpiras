@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FiShoppingCart } from 'react-icons/fi'
 import ClientSearch from './ui/client/searchClient'
 import ProductList from './ui/products/productList'
@@ -19,11 +19,16 @@ export default function DeliveryModule() {
     setShowCart((prev) => !prev)
   }
 
+  // Asegúrate de que este hook solo se ejecute en el cliente
+  useEffect(() => {
+    // Código adicional para manejar efectos cuando el componente se monte
+  }, []);
+
   return (
     <div className={cn(
       "relative w-full transition-all duration-300",
       isOpen && !isMobile ? "ml-0" : "ml-0",
-      "pt-4" // Add padding top to prevent content from being hidden under navbar
+      "pt-4" // Agregar padding para evitar que el contenido quede oculto debajo del navbar
     )}>
       {/* Sección principal */}
       <div className="flex-1 px-4">
@@ -57,4 +62,3 @@ export default function DeliveryModule() {
     </div>
   )
 }
-
