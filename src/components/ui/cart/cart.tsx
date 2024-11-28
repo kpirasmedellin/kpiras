@@ -144,20 +144,20 @@ export default function Cart() {
   
   
   return (
-    <div className="p-4 border mt-4">
-      <h3 className="text-xl font-bold">Carrito</h3>
+    <div className="p-4 bg-amber-50 min-h-screen text-amber-600">
+      <h3 className="text-xl font-bold text-amber-700">Carrito</h3>
 
       {cliente ? (
-        <div className="mb-4">
-          <p><strong>Cliente:</strong> {cliente.nombre}</p>
-          <p><strong>Teléfono:</strong> {cliente.telefono}</p>
-          <p><strong>Dirección:</strong> {cliente.direccion}</p>
+        <div className="mb-4 ">
+          <p>Cliente: {cliente.nombre}</p>
+          <p>Teléfono: {cliente.telefono}</p>
+          <p>Dirección: {cliente.direccion}</p>
         </div>
       ) : (
         <div className="mb-4">
-          <p><strong>Cliente:</strong> {clienteGenerico.nombre}</p>
-          <p><strong>Teléfono:</strong> {clienteGenerico.telefono}</p>
-          <p><strong>Dirección:</strong> {clienteGenerico.direccion}</p>
+          <p>Cliente: {clienteGenerico.nombre}</p>
+          <p>Teléfono: {clienteGenerico.telefono}</p>
+          <p>Dirección: {clienteGenerico.direccion}</p>
         </div>
       )}
 
@@ -176,16 +176,16 @@ export default function Cart() {
         ))}
       </ul>
 
-      <p className="mt-4">Total: ${total}</p>
+      <p className="mt-4 ">Total: ${total}</p>
       <textarea
         placeholder="Observaciones"
         value={observaciones}
         onChange={(e) => setObservaciones(e.target.value)}
-        className="border p-2 w-full mt-4"
+        className="border border-amber-400 rounded p-2 w-full mt-4 bg-amber-50 text-amber-600 focus:border-amber-600"
       />
       <button
         onClick={handleFacturar}
-        className="bg-blue-500 text-white px-4 py-2 mt-2"
+        className="bg-amber-500 rounded text-white px-4 py-2 mt-2"
       >
         Facturar
       </button>

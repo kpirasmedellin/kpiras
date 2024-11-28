@@ -72,7 +72,7 @@ export default function ProductList() {
         {/* Botones de categorías */}
         <div className="flex overflow-x-auto gap-3 mb-4 pb-2 scrollbar-hide sm:flex-wrap sm:overflow-x-visible">
           <button
-            className={`px-4 py-1 rounded font-bold transition-all duration-200 ${categoriaId === "all" ? 'bg-amber-500 text-white' : 'bg-gray-100 text-black'}`}
+            className={`px-4 py-1 rounded font-bold transition-all duration-200 ${categoriaId === "all" ? 'bg-amber-500 text-white' : 'bg-amber-200 text-amber-700'}`}
             onClick={() => setCategoriaId("all")}
           >
             Todas las Categorías
@@ -80,7 +80,7 @@ export default function ProductList() {
           {categorias.map((categoria) => (
             <button
               key={categoria.id}
-              className={`px-4 py-1 rounded font-bold transition-all duration-200 ${categoriaId === categoria.id ? 'bg-amber-500 text-white' : 'bg-gray-100 text-black'}`}
+              className={`px-4 py-1 rounded font-bold transition-all duration-200 ${categoriaId === categoria.id ? 'bg-amber-500 text-white' : 'bg-amber-200 text-amber-500'}`}
               onClick={() => setCategoriaId(categoria.id)}
             >
               {categoria.nombre}
@@ -90,36 +90,36 @@ export default function ProductList() {
       </div>
 
       {/* Lista de productos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {isLoading
           ? Array.from({ length: 6 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
           : filteredProducts.map((producto: Product) => (
-              <Card key={producto.id} className="overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src={producto.urlImagen || '/placeholder.png'}
-                      alt={producto.nombre}
-                      layout="fill"
-                      objectFit="cover"
-                    />
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <CardTitle>{producto.nombre}</CardTitle>
-                  <p className="text-amber-700 font-bold mt-2">${producto.precio}</p>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    onClick={() => addToCarrito(producto)}
-                    className="w-full bg-amber-500 text-amber-950 hover:bg-amber-600"
-                  >
-                    Agregar al Carrito
-                  </Button>
-                </CardFooter>
-              </Card>
+                    <Card key={producto.id} className="overflow-hidden transform transition-transform duration-300 hover:scale-105">
+                        <CardHeader className="p-0">
+                            <div className="relative h-48 w-full">
+                                <Image
+                                    src={producto.urlImagen || '/placeholder.png'}
+                                    alt={producto.nombre}
+                                    layout="fill"
+                                    className="object-fit center"
+                                />
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                            <CardTitle className="text-lg font-semibold">{producto.nombre}</CardTitle>
+                            <p className="text-amber-700 font-bold mt-2">{`$${(producto.precio)}`}</p>
+                        </CardContent>
+                        <CardFooter className="flex justify-center p-4">
+                            <button
+                                onClick={() => addToCarrito(producto)}
+                                className="w-full bg-amber-500 text-amber-950 hover:bg-amber-600 py-2 px-4 rounded-lg font-semibold"
+                            >
+                                Agregar al Carrito
+                            </button>
+                        </CardFooter>
+                    </Card>
             ))
         }
       </div>

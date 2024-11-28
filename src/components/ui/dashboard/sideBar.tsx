@@ -31,7 +31,7 @@ interface NavItemProps {
 }
 
 const SkeletonLoader = () => (
-  <div className="flex items-center justify-center h-screen bg-amber-50">
+  <div className="flex items-center justify-center h-screen bg-amber-100">
     <div className="w-32 h-32 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
   </div>
 )
@@ -65,7 +65,7 @@ export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashb
 
   if (status === 'loading') {
     return (
-      <div className="fixed inset-0 bg-background flex items-center justify-center">
+      <div className="fixed inset-0 bg-background flex items-center justify-center bg-amber-100">
         <SkeletonLoader />
       </div>
     )
@@ -116,7 +116,7 @@ export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashb
         transition={{ duration: 0.3 }}
         className={cn(
           "bg-amber-50 text-amber-900 h-screen overflow-hidden",
-          isMobile && !isOpen ? 'fixed top-4 left-4 rounded-full z-50 h-16 w-16' : 'fixed top-0 left-0 z-50'
+          isMobile && !isOpen ? 'fixed bottom-4 left-4 rounded-full z-50 h-16' : 'fixed top-0 left-0 z-50'
         )}
       >
         <div className="flex flex-col h-full">

@@ -34,7 +34,7 @@ export default function MainPage() {
       {/* Botón flotante para abrir/cerrar el carrito */}
       <button
         onClick={toggleCart}
-        className="fixed top-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg z-50"
+        className="fixed top-4 right-4 bg-amber-500 text-white p-3 rounded-full shadow-lg z-50"
       >
         <FiShoppingCart size={24} />
         {carrito.length > 0 && (
