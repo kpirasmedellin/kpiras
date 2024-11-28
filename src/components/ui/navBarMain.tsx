@@ -29,6 +29,7 @@ export default function NavBarTop() {
               <NavLink href="/promociones">Promociones</NavLink>
               <NavLink href="/menu">Menú</NavLink>
               <NavLink href="/contacto">Contacto</NavLink>
+              <NavLink href="/login">Ingresar</NavLink>
             </div>
           </div>
           <div className="md:hidden pr-6">
@@ -53,6 +54,7 @@ export default function NavBarTop() {
             <NavLink href="/promociones" mobile>Promociones</NavLink>
             <NavLink href="/menu" mobile>Menú</NavLink>
             <NavLink href="/contact" mobile>Contacto</NavLink>
+            <NavLink href="/login">Ingresar</NavLink>
           </div>
         </div>
       )}
