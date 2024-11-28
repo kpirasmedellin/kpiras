@@ -19,6 +19,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/app/lib/utils"
 
+interface NavBarAsideDashboardProps {
+  toggleSidebar?: () => void;
+}
+
 interface NavItemProps {
   href: string
   icon: React.ElementType
@@ -32,7 +36,7 @@ const SkeletonLoader = () => (
   </div>
 )
 
-export default function NavBarAsideDashboard() {
+export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashboardProps) {
   const { data: session, status } = useSession()
   const [isOpen, setIsOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
@@ -48,6 +52,16 @@ export default function NavBarAsideDashboard() {
     window.addEventListener('resize', checkIfMobile)
     return () => window.removeEventListener('resize', checkIfMobile)
   }, [])
+
+  const toggleNavbar = () => {
+    const newOpenState = !isOpen
+    setIsOpen(newOpenState)
+    
+    // Call the external toggle function if provided
+    if (toggleSidebar) {
+      toggleSidebar()
+    }
+  }
 
   if (status === 'loading') {
     return (
@@ -93,8 +107,6 @@ export default function NavBarAsideDashboard() {
       </TooltipProvider>
     )
   }
-
-  const toggleNavbar = () => setIsOpen(!isOpen)
 
   return (
     <AnimatePresence>

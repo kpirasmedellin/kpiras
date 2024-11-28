@@ -15,7 +15,7 @@ export default function MainPage() {
   };
 
   return (
-    <div className="relative flex w-full">
+    <div className=" flex">
       {/* Sección principal */}
       <div className="w-full">
         <ClientSearch />

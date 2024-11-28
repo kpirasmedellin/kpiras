@@ -15,14 +15,14 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen w-full justify-end">
       {/* Sidebar */}
       <aside className="flex-none h-full overflow-y-auto absolute z-[500] lg:relative lg:z-auto">
         <NavBarAsideDashboard />
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto ml-0 lg:ml-0 relative">
+      <main className="w-full lg:w-[95%]">
         <div>{children}</div>
       </main>
     </div>

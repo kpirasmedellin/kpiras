@@ -80,13 +80,13 @@ export default function ClientSearch() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-amber-50">
       <input
         type="text"
         placeholder="Buscar por nombre o teléfono"
         value={searchValue}
         onChange={(e) => handleInputChange(e.target.value)}
-        className="border p-2 w-full"
+        className="flex h-10 w-full rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm ring-offset-amber-50 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       />
       {error && <p className="text-red-500 mt-2">{error}</p>}
 
