@@ -58,7 +58,7 @@ export default function ProductList() {
   )
 
   return (
-    <div className="p-4 bg-amber-50">
+    <div className="p-4 bg-amber-50 min-h-screen">
       <div className="mb-4 space-y-4">
         {/* Barra de búsqueda */}
         <Input
