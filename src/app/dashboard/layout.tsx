@@ -2,7 +2,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth"; // Ajusta la ruta si es necesario
 import { redirect } from "next/navigation";
 import NavBarAsideDashboard from "@/components/ui/dashboard/sideBar";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "Kpiras",
+  description: "El sitio de las papas ricas en Medellín",
+};
 export default async function DashboardLayout({
   children,
 }: {
