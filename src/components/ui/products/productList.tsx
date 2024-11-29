@@ -90,13 +90,13 @@ export default function ProductList() {
       </div>
 
       {/* Lista de productos */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-4">
         {isLoading
           ? Array.from({ length: 6 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
           : filteredProducts.map((producto: Product) => (
-                    <Card key={producto.id} className="overflow-hidden transform transition-transform duration-300 hover:scale-105">
+                    <Card key={producto.id} className="overflow-hidden transform transition-transform duration-300 hover:scale-105 z-0">
                         <CardHeader className="p-0">
                             <div className="relative h-48 w-full">
                                 <Image
@@ -107,7 +107,7 @@ export default function ProductList() {
                                 />
                             </div>
                         </CardHeader>
-                        <CardContent className="p-4">
+                        <CardContent className="p-4 text-center">
                             <CardTitle className="text-lg font-semibold">{producto.nombre}</CardTitle>
                             <p className="text-amber-700 font-bold mt-2">{`$${(producto.precio)}`}</p>
                         </CardContent>

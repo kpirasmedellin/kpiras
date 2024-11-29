@@ -105,7 +105,7 @@ export default function ClientSearch() {
       )}
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+        <div className="fixed z-30 inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded shadow-lg w-96">
             <h3 className="text-lg font-bold mb-4">Crear Cliente</h3>
             <input
