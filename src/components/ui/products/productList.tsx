@@ -103,7 +103,7 @@ export default function ProductList() {
                                     src={producto.urlImagen || '/placeholder.png'}
                                     alt={producto.nombre}
                                     layout="fill"
-                                    className="object-fit center"
+                                    className="object-cover"
                                 />
                             </div>
                         </CardHeader>
