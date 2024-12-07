@@ -6,12 +6,8 @@ import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MdTableRestaurant, MdDeliveryDining } from 'react-icons/md'
-import { RiStackOverflowFill } from 'react-icons/ri'
-import { ImStatsDots } from 'react-icons/im'
+import { MdDeliveryDining } from 'react-icons/md'
 import { BiSolidFoodMenu } from 'react-icons/bi'
-import { FaPeopleRobbery, FaKitchenSet, FaFileInvoiceDollar } from 'react-icons/fa6'
-import { HiComputerDesktop } from 'react-icons/hi2'
 import { TbLogout2 } from "react-icons/tb"
 import { GiKnifeFork, GiForkKnifeSpoon } from "react-icons/gi"
 import { Button } from "@/components/ui/button"
@@ -31,14 +27,14 @@ interface NavItemProps {
 }
 
 const SkeletonLoader = () => (
-  <div className="flex items-center justify-center h-screen bg-amber-100">
+  <div className="fixed inset-0 bg-amber-100 flex items-center justify-center z-50">
     <div className="w-32 h-32 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
   </div>
 )
 
 export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashboardProps) {
   const { data: session, status } = useSession()
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false) // Inicializar como colapsado
   const [isMobile, setIsMobile] = useState(false)
   const pathname = usePathname()
 
@@ -46,7 +42,7 @@ export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashb
     const checkIfMobile = () => {
       const isMobileView = window.innerWidth < 768
       setIsMobile(isMobileView)
-      setIsOpen(!isMobileView)
+      // No modificar isOpen automáticamente
     }
     checkIfMobile()
     window.addEventListener('resize', checkIfMobile)
@@ -57,18 +53,14 @@ export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashb
     const newOpenState = !isOpen
     setIsOpen(newOpenState)
     
-    // Call the external toggle function if provided
+    // Llamar a la función externa toggleSidebar si se proporciona
     if (toggleSidebar) {
       toggleSidebar()
     }
   }
 
   if (status === 'loading') {
-    return (
-      <div className="fixed inset-0 bg-background flex items-center justify-center bg-amber-100">
-        <SkeletonLoader />
-      </div>
-    )
+    return <SkeletonLoader />
   }
 
   if (!session) return null
@@ -116,7 +108,7 @@ export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashb
         transition={{ duration: 0.3 }}
         className={cn(
           "bg-amber-50 text-amber-900 h-screen overflow-hidden",
-          isMobile && !isOpen ? 'fixed bottom-4 left-4 rounded-full z-50 h-16' : 'fixed top-0 left-0 z-50'
+          isMobile && !isOpen ? 'fixed bottom-4 left-4 rounded-full z-50 h-16' : 'fixed top-0 left-0 z-40' // z-40 para estar por debajo del SkeletonLoader z-50
         )}
       >
         <div className="flex flex-col h-full">
@@ -163,15 +155,18 @@ export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashb
             "flex-1 overflow-y-auto py-2 space-y-1",
             isOpen ? "px-3" : "px-2"
           )}>
+            {/* Puedes descomentar y ajustar las rutas según tus necesidades */}
+            {/* 
             <NavItem href="/dashboard/tables" icon={MdTableRestaurant} label="Mesas" condition={isAdmin || isWaiter} />
             <NavItem href="/dashboard/invoice" icon={FaFileInvoiceDollar} label="Facturar" condition={isAdmin || isCashier} />
             <NavItem href="/dashboard/pos" icon={HiComputerDesktop} label="POS" condition={isAdmin || isCashier} />
-            <NavItem href="/dashboard/kitchen" icon={FaKitchenSet} label="Cocina" condition={isAdmin || isCashier} />
+            <NavItem href="/dashboard/kitchen" icon={FaKitchenSet} label="Cocina" condition={isAdmin || isCashier} /> 
+            */}
             <NavItem href="/dashboard/delivery" icon={MdDeliveryDining} label="Domicilios" condition={isAdmin || isCashier} />
-            <NavItem href="/dashboard/sales" icon={RiStackOverflowFill} label="Movimientos" condition={isAdmin} />
-            <NavItem href="/dashboard/stadistics" icon={ImStatsDots} label="Estadísticas" condition={isAdmin} />
             <NavItem href="/dashboard/menu" icon={BiSolidFoodMenu} label="Menú" condition={isAdmin} />
-            <NavItem href="/dashboard/createusers" icon={FaPeopleRobbery} label="Empleados" condition={isAdmin} />
+            {/* 
+            <NavItem href="/dashboard/createusers" icon={FaPeopleRobbery} label="Empleados" condition={isAdmin} /> 
+            */}
           </nav>
 
           {isOpen && (
@@ -191,4 +186,3 @@ export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashb
     </AnimatePresence>
   )
 }
-

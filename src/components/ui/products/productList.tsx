@@ -6,9 +6,9 @@ import { fetchProducts } from '@/services/apiServices'
 import useStore from '@/stores/useStore'
 import { Product } from '@/types/Imenu'
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ProductSkeleton } from "@/components/ui/product-skeleton"
+import Swal from 'sweetalert2'
 
 export default function ProductList() {
   const [productos, setProductos] = useState<Product[]>([])
@@ -17,7 +17,7 @@ export default function ProductList() {
   const [categorias, setCategorias] = useState<{ id: string; nombre: string }[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const { addToCarrito } = useStore()
+  const { addToCarrito, carrito } = useStore()
 
   // Cargar las categorías desde la API
   useEffect(() => {
@@ -57,6 +57,43 @@ export default function ProductList() {
     p.nombre.toLowerCase().includes(search.toLowerCase())
   )
 
+  // Determinar qué productos ya están en el carrito
+  const productosEnCarrito = new Set(carrito.map(prod => prod.id))
+
+  // Manejar el clic en la tarjeta del producto
+  const handleCardClick = (producto: Product) => {
+    if (productosEnCarrito.has(producto.id)) {
+      // Informar al usuario que el producto ya está en el carrito
+      Swal.fire({
+        title: 'Producto ya agregado',
+        text: 'Este producto ya está en el carrito. Puedes ajustar la cantidad desde el carrito.',
+        icon: 'info',
+      })
+      return
+    }
+
+    // Mostrar confirmación para agregar al carrito
+    Swal.fire({
+      title: 'Agregar al carrito',
+      text: `¿Quieres agregar "${producto.nombre}" al carrito?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, agregar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        addToCarrito(producto)
+        Swal.fire({
+          title: 'Agregado',
+          text: `"${producto.nombre}" ha sido agregado al carrito.`,
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+        })
+      }
+    })
+  }
+
   return (
     <div className="p-4 bg-amber-50 min-h-screen">
       <div className="mb-4 space-y-4">
@@ -95,32 +132,38 @@ export default function ProductList() {
           ? Array.from({ length: 6 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
-          : filteredProducts.map((producto: Product) => (
-                    <Card key={producto.id} className="overflow-hidden transform transition-transform duration-300 hover:scale-105 z-0">
-                        <CardHeader className="p-0">
-                            <div className="relative h-48 w-full">
-                                <Image
-                                    src={producto.urlImagen || '/placeholder.png'}
-                                    alt={producto.nombre}
-                                    layout="fill"
-                                    className="object-cover"
-                                />
-                            </div>
-                        </CardHeader>
-                        <CardContent className="p-4 text-center">
-                            <CardTitle className="text-lg font-semibold">{producto.nombre}</CardTitle>
-                            <p className="text-amber-700 font-bold mt-2">{`$${(producto.precio)}`}</p>
-                        </CardContent>
-                        <CardFooter className="flex justify-center p-4">
-                            <button
-                                onClick={() => addToCarrito(producto)}
-                                className="w-full bg-amber-500 text-amber-950 hover:bg-amber-600 py-2 px-4 rounded-lg font-semibold"
-                            >
-                                Agregar al Carrito
-                            </button>
-                        </CardFooter>
-                    </Card>
-            ))
+          : filteredProducts.map((producto: Product) => {
+              const isAdded = productosEnCarrito.has(producto.id)
+              return (
+                <Card 
+                  key={producto.id} 
+                  className={`overflow-hidden transform transition-transform duration-300 hover:scale-105 z-0 cursor-pointer relative ${isAdded ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={() => handleCardClick(producto)}
+                >
+                  <CardHeader className="p-0">
+                    <div className="relative h-48 w-full">
+                      <Image
+                        src={producto.urlImagen || '/placeholder.png'}
+                        alt={producto.nombre}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 text-center">
+                    <CardTitle className="text-lg font-semibold">{producto.nombre}</CardTitle>
+                    <p className="text-amber-700 font-bold mt-2">{`$${(producto.precio)}`}</p>
+                  </CardContent>
+                  
+                  {/* Indicador de que el producto ya está en el carrito */}
+                  {isAdded && (
+                    <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+                      En el carrito
+                    </div>
+                  )}
+                </Card>
+              )
+            })
         }
       </div>
     </div>
