@@ -1,3 +1,5 @@
+// app/api/invoice/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
@@ -6,16 +8,18 @@ const prisma = new PrismaClient();
 // POST: Crear Invoice
 export async function POST(req: NextRequest) {
   try {
-    const { clientId, products, descuento, total, estado, observaciones, turnoId } = await req.json();
+    const { clientId, products, descuento, total, estado, observaciones, turnoId, fecha } = await req.json();
+
 
     const newInvoice = await prisma.invoice.create({
       data: {
         clientId: clientId || null,
-        descuento,
+        descuento: descuento || 0,
         total,
         estado,
-        observaciones,
-        turnoId,
+        observaciones: observaciones || '',
+        turnoId: turnoId || null,
+        fecha, // Establecer la fecha correcta
         InvoiceProducts: {
           create: products.map((prod: { id: number; cantidad: number; costo: number; precio: number }) => ({
             productId: prod.id,

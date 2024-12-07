@@ -1,3 +1,5 @@
+import { formatInTimeZone } from 'date-fns-tz';
+
 const API_BASE_URL = '/api';
 
 // Servicios para categorías
@@ -50,6 +52,14 @@ export const fetchInvoices = async (params?: { fechaInicio?: string; fechaFin?: 
   return response.json();
 };
 
+
+const getBogotaISODate = (): string => {
+  const timeZone = 'America/Bogota';
+  const now = new Date();
+  return formatInTimeZone(now, timeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
+};
+
+// Servicio para crear una factura
 export const createInvoice = async (data: {
   clientId: number | null; // Opcional
   products: { id: number; cantidad: number; costo: number; precio: number }[]; // Incluye detalles de productos
@@ -59,14 +69,23 @@ export const createInvoice = async (data: {
   observaciones?: string;
   turnoId?: number;
 }) => {
+  const fechaISO = getBogotaISODate();
+
+  const invoiceData = {
+    ...data,
+    fecha: fechaISO, // Incluir la fecha en formato ISO 8601
+  };
+
   const response = await fetch(`${API_BASE_URL}/invoice`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify(invoiceData),
   });
+
   if (!response.ok) throw new Error('Error al crear factura');
   return response.json();
 };
+
 
 // Servicios para cocina
 export const fetchKitchens = async () => {

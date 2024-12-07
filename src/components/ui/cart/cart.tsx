@@ -7,9 +7,10 @@ import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 
-const Invoice = React.forwardRef(({ cliente, carrito, observaciones, total }: any, ref: any) => (
+const Invoice = React.forwardRef(({ cliente, carrito, observaciones, total, fecha }: any, ref: any) => (
   <div ref={ref} className="w-[80mm] p-4 border">
     <h3 className="text-center font-bold text-lg">Factura</h3>
+    <p className="text-right text-sm">Fecha: {fecha}</p> {/* Mostrar la fecha */}
     {cliente && (
       <div className="mt-4">
         <p><strong>Cliente:</strong> {cliente.nombre}</p>
@@ -59,7 +60,8 @@ export default function Cart() {
   } = useStore();
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const router = useRouter();
+  const [invoiceDate, setInvoiceDate] = useState<string>('');
+
 
   const clienteGenerico = {
     id: 0,
@@ -68,6 +70,7 @@ export default function Cart() {
     direccion: '1',
   };
 
+  
   const total = carrito.reduce((sum, prod) => sum + prod.precio * prod.cantidad, 0);
 
   const invoiceRef = useRef<HTMLDivElement>(null);
@@ -149,7 +152,8 @@ export default function Cart() {
   
     try {
       await createKitchen(kitchenData);
-      await createInvoice(invoiceData);
+      const createdInvoice = await createInvoice(invoiceData);
+      setInvoiceDate(createdInvoice.fecha);
       handlePrint();
       clearCarrito();
   
@@ -171,7 +175,6 @@ export default function Cart() {
       setIsProcessing(false);
     }
   };
-  
 
   return (
     <div className="p-4 bg-amber-50 min-h-screen text-amber-600">
@@ -253,9 +256,9 @@ export default function Cart() {
           carrito={carrito}
           observaciones={observaciones}
           total={total}
+          fecha={invoiceDate}
         />
       </div>
     </div>
   );
 }
-

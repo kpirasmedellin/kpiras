@@ -7,6 +7,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MdDeliveryDining } from 'react-icons/md'
+import { MdQueryStats } from "react-icons/md";
 import { BiSolidFoodMenu } from 'react-icons/bi'
 import { TbLogout2 } from "react-icons/tb"
 import { GiKnifeFork, GiForkKnifeSpoon } from "react-icons/gi"
@@ -162,8 +163,10 @@ export default function NavBarAsideDashboard({ toggleSidebar }: NavBarAsideDashb
             <NavItem href="/dashboard/pos" icon={HiComputerDesktop} label="POS" condition={isAdmin || isCashier} />
             <NavItem href="/dashboard/kitchen" icon={FaKitchenSet} label="Cocina" condition={isAdmin || isCashier} /> 
             */}
+
             <NavItem href="/dashboard/delivery" icon={MdDeliveryDining} label="Domicilios" condition={isAdmin || isCashier} />
             <NavItem href="/dashboard/menu" icon={BiSolidFoodMenu} label="Menú" condition={isAdmin} />
+            <NavItem href="/dashboard/stadistics" icon={MdQueryStats} label="Estadisticas" condition={isAdmin || isCashier} />
             {/* 
             <NavItem href="/dashboard/createusers" icon={FaPeopleRobbery} label="Empleados" condition={isAdmin} /> 
             */}
