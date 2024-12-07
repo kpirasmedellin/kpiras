@@ -87,7 +87,7 @@ model Invoice {
   client           Client?          @relation(fields: [clientId], references: [id])
   descuento        Float?           // Descuento opcional
   total            Float            // Total de la factura
-  fecha            DateTime         @default(now())
+  fecha            DateTime         
   estado           EstadoFactura    // Estado de la factura
   observaciones    String?          // Campo opcional
   turnoId          Int?             // Relación opcional con turno

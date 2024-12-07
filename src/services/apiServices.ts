@@ -1,4 +1,4 @@
-import { formatInTimeZone } from 'date-fns-tz';
+
 
 const API_BASE_URL = '/api';
 
@@ -53,11 +53,6 @@ export const fetchInvoices = async (params?: { fechaInicio?: string; fechaFin?: 
 };
 
 
-const getBogotaISODate = (): string => {
-  const timeZone = 'America/Bogota';
-  const now = new Date();
-  return formatInTimeZone(now, timeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
-};
 
 // Servicio para crear una factura
 export const createInvoice = async (data: {
@@ -69,11 +64,10 @@ export const createInvoice = async (data: {
   observaciones?: string;
   turnoId?: number;
 }) => {
-  const fechaISO = getBogotaISODate();
 
   const invoiceData = {
     ...data,
-    fecha: fechaISO, // Incluir la fecha en formato ISO 8601
+  
   };
 
   const response = await fetch(`${API_BASE_URL}/invoice`, {
